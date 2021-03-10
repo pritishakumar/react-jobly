@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
-import App from '../App';
+import UserContext from '../context/UserContext';
 import { NavLink } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'reactstrap';
 
 function NavBar() {
-	const user = useContext(App.UserContext);
+	const user = useContext(UserContext);
+
 	let content;
-	if (!user) {
+	if (!Object.keys(user).length) {
 		content = (
       <>
         <NavItem>

@@ -1,13 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import JobCard from './JobCard';
 import JoblyApi from "../helper/api";
-import App from '../App';
+import AuthFunctionsContext from "../context/AuthFunctionsContext";
+import { withRouter, Redirect } from "react-router-dom";
 
 function JobsList() {
-	const { ensureLoggedIn } = useContext(App.AuthFunctionsContext);
-  ensureLoggedIn();
-	const [ loading, setLoading ] = useState(true);
+	const { ensureLoggedIn } = useContext(AuthFunctionsContext);
+  
 	const [ jobsList, setJobsList ] = useState([]);
+
+  useEffect(() => {
+    const unauthorized = ensureLoggedIn();
+    if (unauthorized) {<Redirect to="/login" />}
+	}, []);
 
 	useEffect(() => {
 		const getJobs = async () => {
@@ -17,18 +22,8 @@ function JobsList() {
 		getJobs();
 	}, []);
 
-	useEffect(
-		() => {
-			if (loading) {
-				if (jobsList.length) {
-					setLoading(false);
-				}
-			}
-		},
-		[ jobsList ]
-	);
 
-	if (loading) {
+	if (!jobsList.length) {
 		return <p>Loading...</p>;
 	}
 	return (
@@ -43,4 +38,4 @@ function JobsList() {
 	);
 }
 
-export default JobsList;
+export default withRouter(JobsList);

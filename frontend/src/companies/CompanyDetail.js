@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
 import JobCard from "../jobs/JobCard";
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 import JoblyApi from "../helper/api";
-import App from '../App';
+import AuthFunctionsContext from "../context/AuthFunctionsContext";
 
 function CompanyDetail() {
-  const { ensureLoggedIn } = useContext(App.AuthFunctionsContext);
-  ensureLoggedIn();
-  const [ loading, setLoading ] = useState(true);
-  const { handle } = useParams();
+  const { ensureLoggedIn } = useContext(AuthFunctionsContext);
   const [ companyInfo, setCompanyInfo ] = useState({});
-  
+  const { handle } = useParams();
+
+  useEffect(() => {
+    const unauthorized = ensureLoggedIn();
+    if (unauthorized) { <Redirect to="/login" />}
+    }, [])
+
   useEffect(() => {
     const loadCompany = async () => {
       const companyObj = await JoblyApi.getCompany(handle);
@@ -18,16 +21,9 @@ function CompanyDetail() {
     }
     loadCompany();
   }, [])
+
   
-  useEffect(() => {
-    if (loading){
-      if (Object.keys(companyInfo).length){
-        setLoading(false);
-      };
-    };
-  }, [companyInfo])
-  
-  if (loading) {
+  if (!Object.keys(companyInfo).length) {
     return <p>Loading...</p>
   }
 

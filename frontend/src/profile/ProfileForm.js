@@ -1,21 +1,31 @@
-import React, { useState, useContext }  from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState, useContext, useEffect }  from "react";
+import { useHistory, Redirect } from "react-router-dom";
 import JoblyApi from "../helper/api";
-import App from '../App';
+import AuthFunctionsContext from "../context/AuthFunctionsContext";
+import UserContext from "../context/UserContext";
 
 
 function ProfileForm() {
-  const { ensureLoggedIn, refreshUser } = useContext(App.AuthFunctionsContext);
-  ensureLoggedIn();
-  const INITIAL_STATE = {
-    password: "",
-    firstName: "",
-    lastName: "",
-    email: ""
-  };
+  const user = useContext(UserContext);
+  const { ensureLoggedIn, refreshUser } = useContext(AuthFunctionsContext);
+  let INITIAL_STATE;
+  if (user) {
+    INITIAL_STATE = {
+      password: "",
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email
+    }
+  }
   const [ formData, setFormData ] = useState(INITIAL_STATE);
   const history = useHistory();
-  const { username } = useContext(App.UserContext);
+
+
+  useEffect(() => {
+    const notAuthorized = ensureLoggedIn();
+    if (notAuthorized) { <Redirect to="/login" />}
+    }, [])
 
 
   const handleChange = (evt) => {
@@ -38,11 +48,16 @@ function ProfileForm() {
     refreshUser()
 	};
 
+  if (!Object.keys(user).length) {
+    return <p>Loading</p>
+  }
   return (
     <form className="ProfileForm" onSubmit={handleSubmit}>
       <label htmlFor="input-username">Username</label>
-        <p>{username}</p>
-        <br />
+        <input name="username" id="input-username"
+          value={formData.username} disabled
+        />
+      <br />
       <label htmlFor="input-firstName">First Name</label>
         <input name="firstName" id="input-firstName"
           value={formData.firstName} onChange={handleChange}

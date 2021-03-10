@@ -46,8 +46,6 @@ class JoblyApi {
     return res.company;
   }
 
-
-
   static async filterQueries(type, filter){
     let filterKeyword;
     if (type === "companies"){
@@ -61,32 +59,41 @@ class JoblyApi {
   }
 
   static async applyJob(username, jobId){
-    let url = `${username}/jobs/${jobId}`
+    let url = `users/${username}/jobs/${jobId}`
     let res = await this.request(url, {}, "post");
-    return res.data;
+    return res;
   }
 
+
   static async login(data){
-    let url = `/token`
+    let url = `auth/token`
     let res = await this.request(url, data, "post");
-    return res.data;
+    return res.token;
   }
   static async signup(data){
-    let url = `/register`
+    let url = `auth/register`
     let res = await this.request(url, data, "post");
-    return res.data;
+    return res.token;
   }
 
   static async fetchUser(username){
-    let url = `${username}`
+    let url = `users/${username}`
     let res = await this.request(url);
-    return res.data;
+    return res.user;
   }
 
-  static async patchUser(username, data){
-    let url = `${username}`
-    let res = await this.request(url, data, "patch");
-    return res.data;
+  static async patchUser(data){
+    const {username, firstName, lastName, email, password} = data;
+    try{
+      const passwordCheck = await this.login({username, password})
+    } catch (err) {
+      alert(err);
+      return false;
+    }
+    
+    let url = `users/${username}`
+    let res = await this.request(url, {firstName, lastName, email}, "patch");
+    return res.user;
   }
 }
 

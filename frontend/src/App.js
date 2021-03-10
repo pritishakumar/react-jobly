@@ -3,62 +3,64 @@ import { BrowserRouter, Redirect } from "react-router-dom";
 import NavBar from "./common/NavBar";
 import Routes from "./common/Routes";
 import JoblyApi from "./helper/api";
+import AuthFunctionsContext from "./context/AuthFunctionsContext";
+import UserContext from "./context/UserContext";
+import decode from 'jwt-decode';
 import './App.css';
 
 function App() {
   const [ currentUser, setCurrentUser ] = useState({});
   const [ token, setToken ] = useState("")
 
-  useEffect(() => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  }, [currentUser, token]);
-
   const authFunctions = {
     ensureLoggedIn: () => {
-      if (!localStorage.getItem("token") || !localStorage.getItem("currentUser")){
-        <Redirect to="/login" />
-      } else {
-        if ((Object.keys(currentUser).length) == 0 || !token){
-          setToken(localStorage.getItem("token"));
-          setCurrentUser(JSON.parse(localStorage.getItem("currentUser")));
-        }}},
+      if (!localStorage.getItem("token")){
+        return true;
+      }
+      if (!token){
+        setToken(existing => localStorage.getItem("token"));
+      }
+      if (!currentUser){
+        authFunctions.refreshUser(decode(localStorage.getItem("token")).username);
+      }
+    },
     ensureLoggedOut: () => {
-      if(localStorage.getItem("token") && localStorage.getItem("currentUser")){
-        <Redirect to="/companies" />
+      if(localStorage.getItem("token")){
+        return true;
       }},
     login: async (data) => {
       const resultToken = await JoblyApi.login(data);
-      setToken(resultToken.token);
-      const resultUser = await JoblyApi.fetchUser(data.username);
-      setCurrentUser(resultUser)
-      return resultToken.token;
+      setToken(data => resultToken);
+      JoblyApi.token = resultToken;
+      localStorage.setItem("token", resultToken)
+      const currUser = await authFunctions.refreshUser(decode(resultToken).username)
+      return resultToken;
     },
     signup: async (data) => {
       const resultToken = await JoblyApi.signup(data);
-      setToken(resultToken.token);
-      const resultUser = await JoblyApi.fetchUser(data.username);
-      setCurrentUser(resultUser)
-      return resultToken.token;
+      setToken(resultToken);
+      JoblyApi.token = resultToken;
+      localStorage.setItem("token", resultToken);
+      const currUser = await authFunctions.refreshUser(decode(resultToken).username)
+      return resultToken;
     },
     logout: () => {
+      localStorage.removeItem("token");
       setCurrentUser({});
       setToken("");
     },
-    refreshUser: async () => {
-      const result = await JoblyApi.fetchUser(currentUser.username)
-      setCurrentUser(result.user)
+    refreshUser: async (username) => {
+      if (!username) {username = currentUser.username}
+      const result = await JoblyApi.fetchUser(username)
+      setCurrentUser(existing => result)
   }};
 
-  const UserContext = React.createContext();
-  const AuthFunctionsContext = React.createContext();
-  
 
   return (
     <div className="App">
       <BrowserRouter>
-        <UserContext.Provider value={{currentUser}}>
-          <AuthFunctionsContext.Provider value={{authFunctions}}>
+        <UserContext.Provider value={currentUser}>
+          <AuthFunctionsContext.Provider value={authFunctions}>
             <NavBar />
             <Routes />
           </AuthFunctionsContext.Provider>

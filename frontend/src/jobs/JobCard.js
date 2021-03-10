@@ -1,17 +1,17 @@
 import React, { useContext } from "react";
 import JoblyApi from "../helper/api";
-import App from '../App';
+import AuthFunctionsContext from "../context/AuthFunctionsContext";
+import UserContext from "../context/UserContext";
 
 function JobCard({ job }) {
-  const { applications } = useContext(App.UserContext);
-  const { refreshUser } = useContext(App.AuthFunctionsContext);
+  const user = useContext(UserContext);
+  const { refreshUser } = useContext(AuthFunctionsContext);
   
   const { id, title, salary, equity } = job[0];
-  const appliedStatus = applications.includes(id);
 
   const handleApply = async (evt) => {
     const jobId = evt.target.parentElement.dataset.id;
-    const username = "testuser";
+    const username = user.username;
     const resultApply = await JoblyApi.applyJob(username, jobId);
     refreshUser();
   }
@@ -21,7 +21,7 @@ function JobCard({ job }) {
       <p>{title}</p>
       <p>{salary}</p>
       <p>{equity}</p>
-      {(appliedStatus) ? 
+      {(user.applications && user.applications.includes(id)) ? 
         <button disabled>Applied</button> :
         <button onClick={handleApply}>Apply</button>}
     </div>

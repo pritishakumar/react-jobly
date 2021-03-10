@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { Link } from "react-router-dom";
-import App from '../App';
+import UserContext from '../context/UserContext';
 
 function Home() {
-	const user = useContext(App.UserContext);
+	const user = useContext(UserContext);
 	let content;
-	if (user) {
+	if (Object.keys(user).length) {
 		content = (
       <h3>Welcome Back, {user.firstName}!</h3>
     );

@@ -2,13 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function CompanyCard({ company }) {
-  const { name, description, logo_url, handle } = company[0];
+  const { name, description, logoUrl, handle } = company[0];
   return (
     <Link to={`/companies/${handle}`} className="CompanyCard">
       <div>
         <p>{name}</p>
         <p>{description}</p>
-        <img src={logo_url} 
+        <img src={logoUrl} 
           height="100px" 
           width="100px" 
           alt={name}
