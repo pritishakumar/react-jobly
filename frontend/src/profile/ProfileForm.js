@@ -1,13 +1,15 @@
-import React, { useState, useContext, useEffect }  from "react";
-import { useHistory, Redirect } from "react-router-dom";
+import React, { useState, useContext}  from "react";
+import { useHistory } from "react-router-dom";
 import JoblyApi from "../helper/api";
 import AuthFunctionsContext from "../context/AuthFunctionsContext";
 import UserContext from "../context/UserContext";
 
-
+/** Displays page with a form for the user to update their 
+ * information
+ */
 function ProfileForm() {
   const user = useContext(UserContext);
-  const { ensureLoggedIn, refreshUser } = useContext(AuthFunctionsContext);
+  const { refreshUser } = useContext(AuthFunctionsContext);
   let INITIAL_STATE;
   if (user) {
     INITIAL_STATE = {
@@ -21,13 +23,6 @@ function ProfileForm() {
   const [ formData, setFormData ] = useState(INITIAL_STATE);
   const history = useHistory();
 
-
-  useEffect(() => {
-    const notAuthorized = ensureLoggedIn();
-    if (notAuthorized) { <Redirect to="/login" />}
-    }, [])
-
-
   const handleChange = (evt) => {
     const { name, value } = evt.target;
     setFormData(data => ({
@@ -39,7 +34,7 @@ function ProfileForm() {
   const handleSubmit = async (evt) => {
 		evt.preventDefault();
 		const results = await JoblyApi.patchUser(formData);
-    if (results) { // ~~~~~~~~~~~~~
+    if (results) {
       history.push("/companies")
     } else {
       alert("Error: update unsuccessful");

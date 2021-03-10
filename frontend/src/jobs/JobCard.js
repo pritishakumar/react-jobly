@@ -3,6 +3,10 @@ import JoblyApi from "../helper/api";
 import AuthFunctionsContext from "../context/AuthFunctionsContext";
 import UserContext from "../context/UserContext";
 
+
+/** Rendered by JobsList, shows each job's details along with
+ * the logic to apply to it
+ */
 function JobCard({ job }) {
   const user = useContext(UserContext);
   const { refreshUser } = useContext(AuthFunctionsContext);

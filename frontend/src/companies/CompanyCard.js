@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+/** Rendered by CompaniesList, displays Link and brief
+ * company information
+ */
 function CompanyCard({ company }) {
   const { name, description, logoUrl, handle } = company[0];
   return (

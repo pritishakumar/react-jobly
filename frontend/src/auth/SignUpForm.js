@@ -1,10 +1,10 @@
-import React, { useState, useContext, useEffect }  from "react";
-import { useHistory, Redirect } from "react-router-dom";
+import React, { useState, useContext }  from "react";
+import { useHistory } from "react-router-dom";
 import AuthFunctionsContext from "../context/AuthFunctionsContext";
 
-
+/** Page displays sign up form and handles the logic */
 function SignUpForm() {
-  const { ensureLoggedOut, signup } = useContext(AuthFunctionsContext)
+  const { signup } = useContext(AuthFunctionsContext)
 
   const INITIAL_STATE = {
     username: "",
@@ -15,11 +15,6 @@ function SignUpForm() {
   };
   const [ formData, setFormData ] = useState(INITIAL_STATE);
   const history = useHistory();
-
-  useEffect(() => {
-    const notAuthorized = ensureLoggedOut();
-    if (notAuthorized) { <Redirect to="/companies" />}
-    }, [])
   
   const handleChange = (evt) => {
     const { name, value } = evt.target;

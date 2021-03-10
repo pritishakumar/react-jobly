@@ -7,29 +7,30 @@ import LoginForm from "../auth/LoginForm";
 import SignUpForm from "../auth/SignUpForm";
 import ProfileForm from "../profile/ProfileForm";
 import Home from "../home/Home";
+import PrivateRoute from "./PrivateRoute";
 
 function Routes() {
   return (
     <div className="Routes">
       <Switch>
-        <Route exact path="/companies">
+        <PrivateRoute exact path="/companies">
             <CompaniesList />
-        </Route>
-        <Route exact path="/companies/:handle">
+        </PrivateRoute>
+        <PrivateRoute exact path="/companies/:handle">
             <CompanyDetail />
-        </Route>
-        <Route exact path="/jobs">
+        </PrivateRoute>
+        <PrivateRoute exact path="/jobs">
             <JobsList />
-        </Route>
+        </PrivateRoute>
         <Route exact path="/login">
             <LoginForm />
         </Route>
         <Route exact path="/signup">
             <SignUpForm />
         </Route>
-        <Route exact path="/profile">
+        <PrivateRoute exact path="/profile">
             <ProfileForm />
-        </Route>
+        </PrivateRoute>
         <Route exact path="/">
             <Home />
         </Route>

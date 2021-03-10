@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import JobCard from "../jobs/JobCard";
-import { useParams, Redirect } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import JoblyApi from "../helper/api";
-import AuthFunctionsContext from "../context/AuthFunctionsContext";
 
+/** Displays page of detailed company information and the jobs
+ * listed
+ */
 function CompanyDetail() {
-  const { ensureLoggedIn } = useContext(AuthFunctionsContext);
+
   const [ companyInfo, setCompanyInfo ] = useState({});
   const { handle } = useParams();
-
-  useEffect(() => {
-    const unauthorized = ensureLoggedIn();
-    if (unauthorized) { <Redirect to="/login" />}
-    }, [])
 
   useEffect(() => {
     const loadCompany = async () => {

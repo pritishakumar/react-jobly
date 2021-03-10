@@ -1,20 +1,16 @@
-import React, { useState, useEffect, useContext }  from "react";
-import { useHistory, Redirect } from "react-router-dom";
+import React, { useState, useContext }  from "react";
+import { useHistory } from "react-router-dom";
 import AuthFunctionsContext from "../context/AuthFunctionsContext";
 
+/** Page displays login form and handles the logic */
 function LoginForm() {
-  const { ensureLoggedOut, login } = useContext(AuthFunctionsContext)
+  const { login } = useContext(AuthFunctionsContext)
   const INITIAL_STATE = {
     username: "",
     password: "",
   };
   const [ formData, setFormData ] = useState(INITIAL_STATE);
   const history = useHistory();
-
-  useEffect(() => {
-    const notAuthorized = ensureLoggedOut();
-    if (notAuthorized) { <Redirect to="/companies" />}
-    }, [])
 
 
   const handleChange = (evt) => {

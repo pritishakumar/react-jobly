@@ -1,18 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import JobCard from './JobCard';
 import JoblyApi from "../helper/api";
-import AuthFunctionsContext from "../context/AuthFunctionsContext";
-import { withRouter, Redirect } from "react-router-dom";
 
+/** Display page listing current jobs */
 function JobsList() {
-	const { ensureLoggedIn } = useContext(AuthFunctionsContext);
-  
 	const [ jobsList, setJobsList ] = useState([]);
-
-  useEffect(() => {
-    const unauthorized = ensureLoggedIn();
-    if (unauthorized) {<Redirect to="/login" />}
-	}, []);
 
 	useEffect(() => {
 		const getJobs = async () => {
@@ -38,4 +30,4 @@ function JobsList() {
 	);
 }
 
-export default withRouter(JobsList);
+export default JobsList;

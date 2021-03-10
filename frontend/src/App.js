@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Redirect } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter } from "react-router-dom";
 import NavBar from "./common/NavBar";
 import Routes from "./common/Routes";
 import JoblyApi from "./helper/api";
@@ -12,22 +12,10 @@ function App() {
   const [ currentUser, setCurrentUser ] = useState({});
   const [ token, setToken ] = useState("")
 
+  /** Functions using the app state to prepare data
+ * for the API-interfacing functions
+ */
   const authFunctions = {
-    ensureLoggedIn: () => {
-      if (!localStorage.getItem("token")){
-        return true;
-      }
-      if (!token){
-        setToken(existing => localStorage.getItem("token"));
-      }
-      if (!currentUser){
-        authFunctions.refreshUser(decode(localStorage.getItem("token")).username);
-      }
-    },
-    ensureLoggedOut: () => {
-      if(localStorage.getItem("token")){
-        return true;
-      }},
     login: async (data) => {
       const resultToken = await JoblyApi.login(data);
       setToken(data => resultToken);
@@ -46,8 +34,8 @@ function App() {
     },
     logout: () => {
       localStorage.removeItem("token");
-      setCurrentUser({});
-      setToken("");
+      setCurrentUser(existing => ({}));
+      setToken(existing => "");
     },
     refreshUser: async (username) => {
       if (!username) {username = currentUser.username}

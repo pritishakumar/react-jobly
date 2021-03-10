@@ -32,24 +32,38 @@ class JoblyApi {
     }
   }
 
-  // Individual API routes
-
+  
+  /** Retrieve brief information on all of
+   * the companies or jobs in the database
+   * 
+   * Input: keyword = "companies" or "jobs"
+   * Output: Array of company or job obj's
+   */
   static async getAll(keyword){
     let res = await this.request(keyword);
     return res[keyword];
   }
   
-  /** Get details on a company by handle. */
-
+  /** Get details on a company by handle.
+   * Input: handle: company handle
+   * Output: Object containing keys with company details
+   */
   static async getCompany(handle) {
     let res = await this.request(`companies/${handle}`);
     return res.company;
   }
 
+  /** Search function for jobs or companies by the
+   * user
+   * 
+   * Input: type = "companies" or "jobs"
+   *      filter = string to search
+   * Output: Array of matching company or job obj's
+   */
   static async filterQueries(type, filter){
     let filterKeyword;
     if (type === "companies"){
-      filterKeyword = `nameLike=${filter}`
+      filterKeyword = `name=${filter}`
     } else if (type === "jobs"){
       filterKeyword = `title=${filter}`
     }
@@ -58,30 +72,53 @@ class JoblyApi {
     return res.companies;
   }
 
+  /** Updates the applied status on a job
+   * Input: username and id of job applied
+   * Output: Object confirming applied
+   */
   static async applyJob(username, jobId){
     let url = `users/${username}/jobs/${jobId}`
     let res = await this.request(url, {}, "post");
     return res;
   }
 
-
+  /** Logs a user in
+   * Input: form data object containing username and password
+   *      keys
+   * Output: token string
+   */
   static async login(data){
     let url = `auth/token`
     let res = await this.request(url, data, "post");
     return res.token;
   }
+
+  /** Registers a user
+   * Input: form data object containing username, password
+   *      firstName, lastName, and email keys
+   * Output: token string
+   */
   static async signup(data){
     let url = `auth/register`
     let res = await this.request(url, data, "post");
     return res.token;
   }
 
+  /** Retrieves detailed user data
+   * Input: username
+   * Output: object containing keys with information
+   */
   static async fetchUser(username){
     let url = `users/${username}`
     let res = await this.request(url);
     return res.user;
   }
 
+  /** Updates a user's information
+   * Input: form data containing username, firstName, lastName, 
+   *      email, password keys
+   * Output: object containing updated user data
+   */
   static async patchUser(data){
     const {username, firstName, lastName, email, password} = data;
     try{
@@ -97,9 +134,9 @@ class JoblyApi {
   }
 }
 
-// for now, put token ("testuser" / "password" on class)
-JoblyApi.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
-    "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
-    "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
+// // for now, put token ("testuser" / "password" on class)
+// JoblyApi.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
+//     "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
+//     "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
 
 export default JoblyApi;

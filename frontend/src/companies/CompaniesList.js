@@ -1,19 +1,11 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import CompanyCard from "./CompanyCard";
 import SearchBox from "../common/SearchBox";
 import JoblyApi from "../helper/api";
-import AuthFunctionsContext from "../context/AuthFunctionsContext";
-import { withRouter, Redirect } from "react-router-dom";
 
-
+/** Displays list of companies in brief */
 function CompaniesList() {
   const [ companiesList, setCompaniesList ] = useState([]);
-  const ensureLoggedIn = useContext(AuthFunctionsContext).ensureLoggedIn;
-
-  useEffect(() => {
-    const notAuthorized = ensureLoggedIn();
-    if (notAuthorized) { <Redirect to="/login" />}
-    }, [])
 
   useEffect(() => {
     const getCompanies = async () => {

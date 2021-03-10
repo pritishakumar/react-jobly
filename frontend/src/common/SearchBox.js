@@ -7,7 +7,7 @@ function SearchBox({ type, setFunction }) {
 	const handleSubmit = async (evt) => {
 		evt.preventDefault();
 		const results = await JoblyApi.filterQueries(type, formData);
-		setFunction(results.data);
+		setFunction(results);
 		setFormData("")
 	};
 

@@ -2,9 +2,15 @@ import React, { useContext } from 'react';
 import UserContext from '../context/UserContext';
 import { NavLink } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'reactstrap';
+import AuthFunctionsContext from "../context/AuthFunctionsContext";
 
 function NavBar() {
 	const user = useContext(UserContext);
+  const { logout } = useContext(AuthFunctionsContext);
+
+  const handleLogout = () => {
+    logout();
+  }
 
 	let content;
 	if (!Object.keys(user).length) {
@@ -35,9 +41,7 @@ function NavBar() {
 					<NavLink exact to="/profile">Profile</NavLink>
 				</NavItem>
         <NavItem>
-          <NavLink to="/profile">
-            Log out {user.username}
-          </NavLink>
+          <button onClick={handleLogout}>Log out {user.username}</button>
         </NavItem>
       </>
     )
